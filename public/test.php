@@ -1,12 +1,8 @@
 <?php 
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+include_once "../api.php";
 
-require_once '../vendor/autoload.php';
-
-$goutte_dir = "../vendor/Goutte-master/goutte-v1.0.7.phar";
+$goutte_dir = ROOT . "/vendor/Goutte-master/goutte-v1.0.7.phar";
 
 if(file_exists($goutte_dir)){
   include_once $goutte_dir;
