@@ -40,7 +40,7 @@ exit($val);*/
 
 ZCRMRestClient::initialize($configuration);
 $oAuthClient = ZohoOAuth::getClientInstance();
-$grantToken = "1000.954ce7e41975f3bfac68d290f0e61fd7.2f79ba6b8efda5cdcbdc60a4d5c068c6";
+$grantToken = "1000.e6d45df2660dfa16e00fc80499bede8e.8fa234eeb9a952bb2d7b7a44a9543b81";
 $oAuthTokens = $oAuthClient->generateAccessToken($grantToken);
 var_dump($oAuthTokens);
 
