@@ -36,18 +36,18 @@ header("Content-Type: text/json");
 $val = json_encode($test);
 exit($val);*/
 
-ZCRMRestClient::initialize($configuration);
+/*ZCRMRestClient::initialize($configuration);
 $oAuthClient = ZohoOAuth::getClientInstance();
 $grantToken = "1000.d85987daaea4cd7e42475a1672398862.3c0c34b5616c3db26ff6a990e949df06";
 $oAuthTokens = $oAuthClient->generateAccessToken($grantToken);
-var_dump($oAuthTokens);
+var_dump($oAuthTokens);*/
 
-/*ZCRMRestClient::initialize($configuration);
+ZCRMRestClient::initialize($configuration);
 $oAuthClient = ZohoOAuth::getClientInstance(); 
-$refreshToken = "1000.b901e9904c25f6731a34b5d03e6b9afd.30e294b0c73e92e28793318abc1649c0"; 
+$refreshToken = "1000.ff62b8a5b73c1416ddcc659032ebe350.3c6605bbabc01f9b120a9bc36eb919ae"; 
 $userIdentifier = "ricardo.chavez@milanostanze.it"; 
 $oAuthTokens = $oAuthClient->generateAccessTokenFromRefreshToken($refreshToken,$userIdentifier);
-var_dump($oAuthClient);*/
+var_dump($oAuthClient);
 
 ?>
 
