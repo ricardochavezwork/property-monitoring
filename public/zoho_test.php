@@ -20,7 +20,7 @@ $configuration=array(
   "apiVersion"=>"v2"
 );
 
-/*ZCRMRestClient::initialize($configuration);
+ZCRMRestClient::initialize($configuration);
 
 $param_map=array("page"=>1,"per_page"=>100);
 $moduleIns=ZCRMRestClient::getInstance()->getModuleInstance("acquisizione");  //To get module instance
@@ -31,12 +31,10 @@ foreach ($records as $key => $value) {
   $test[] = $value->getEntityId();
 }
 
-$responseIn = $moduleIns->deleteRecords($test);
-
 header("Content-Type: text/json");
 @ob_clean();
 $val = json_encode($test);
-exit($val);*/
+exit($val);
 
 /*ZCRMRestClient::initialize($configuration);
 $oAuthClient = ZohoOAuth::getClientInstance();
@@ -44,12 +42,12 @@ $grantToken = "1000.a909d1ad517a04135339dc6d2f78b243.a22f6d5ea0a3c0b39108147f17d
 $oAuthTokens = $oAuthClient->generateAccessToken($grantToken);
 var_dump($oAuthTokens);*/
 
-ZCRMRestClient::initialize($configuration);
+/*ZCRMRestClient::initialize($configuration);
 $oAuthClient = ZohoOAuth::getClientInstance(); 
 $refreshToken = "1000.b901e9904c25f6731a34b5d03e6b9afd.30e294b0c73e92e28793318abc1649c0"; 
 $userIdentifier = "ricardo.chavez@milanostanze.it"; 
 $oAuthTokens = $oAuthClient->generateAccessTokenFromRefreshToken($refreshToken,$userIdentifier);
-var_dump($oAuthClient);
+var_dump($oAuthClient);*/
 
 ?>
 
