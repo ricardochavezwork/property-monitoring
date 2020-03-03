@@ -1,6 +1,6 @@
 <?php
 
-include_once "../api.php";
+include_once "common.php";
 
 // Import PHPMailer classes into the global namespace
 // These must be at the top of your script, not inside a function
@@ -28,7 +28,7 @@ try {
 
     // Content
     $mail->isHTML(true);                                  // Set email format to HTML
-    $mail->Subject = 'Here is the subject 2';
+    $mail->Subject = 'Here is the subject 3';
     $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
     $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
