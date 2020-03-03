@@ -1,0 +1,2 @@
+cd /opt/bitnami/apache2/htdocs/property-monitoring/public
+php mail_test.php
