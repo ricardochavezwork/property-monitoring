@@ -22,7 +22,7 @@ $requests = Array(
   Array(700, "https://www.immobiliare.it/affitto-case/milano/?criterio=dataModifica&ordine=desc&superficieMinima=70&localiMinimo=3&idMZona[]=10053&idMZona[]=10050&idMZona[]=10049&idMZona[]=10047&idMZona[]=10046")
 );
 
-/*foreach ($requests as $key => $request) {
+foreach ($requests as $key => $request) {
   
   $reqLink = $request[1];
 
@@ -52,7 +52,7 @@ $requests = Array(
       }
     }
   }
-}*/
+}
 
 $endTime = date("Y-m-d H:i:s");
 $logMessagge = "start : " . $startTime . " - end : " . $endTime . " - adsCounter : " . $adsCounter . " \n";
