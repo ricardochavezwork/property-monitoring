@@ -25,7 +25,7 @@ set_time_limit(0);
 $moduleName = "acquisizione";
 $startTime = date("Y-m-d H:i:s");
 $endTime = date("Y-m-d H:i:s");
-$logMessagge = "start : " . $startTime . " - end : " . $endTime . " - adsCounter : 25";
+$logMessagge = "start : " . $startTime . " - end : " . $endTime . " - adsCounter : 25" . " \n";
 
 $requests = Array(
   Array(300, "https://www.immobiliare.it/affitto-case/milano/?criterio=dataModifica&ordine=desc&superficieMinima=70&localiMinimo=3&idMZona[]=10064&idMZona[]=10292"),

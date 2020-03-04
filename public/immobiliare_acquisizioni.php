@@ -55,5 +55,5 @@ foreach ($requests as $key => $request) {
 }
 
 $endTime = date("Y-m-d H:i:s");
-$logMessagge = "start : " . $startTime . " - end : " . $endTime . " - adsCounter : " . $adsCounter;
+$logMessagge = "start : " . $startTime . " - end : " . $endTime . " - adsCounter : " . $adsCounter . " \n";
 echo $logMessagge;
