@@ -8,3 +8,4 @@ date_default_timezone_set("Europe/Rome");
 define ("ROOT", dirname(__FILE__));
 
 require_once ROOT . '/vendor/autoload.php';
+require_once ROOT . '/lib/api.php';

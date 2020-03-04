@@ -1,6 +1,6 @@
 <?php
 
-include_once "../api.php";
+include_once "common.php";
 
 use zcrmsdk\crm\setup\restclient\ZCRMRestClient;
 use zcrmsdk\oauth\ZohoOAuth;
@@ -13,7 +13,7 @@ $configuration=array(
   "client_secret" => "76c7f4466e13aab3bc6a08f3ead1a88dc61ceddfe9",
   "redirect_uri" => "https://www.milanostanze.it",
   "currentUserEmail" => "ricardo.chavez@milanostanze.it",
-  "token_persistence_path" => "../api/zohocrm/tokenPersistence",
+  "token_persistence_path" => ROOT . "/api/zohocrm/tokenPersistence",
   "apiBaseUrl" => "www.zohoapis.eu",
   "accounts_url" => "https://accounts.zoho.eu",
   "access_type" => "offline",
