@@ -122,43 +122,68 @@ class Immobiliare {
 
       $ad = new Annuncio();
       $ad->Link = $link;
+      $jsHydration = null;
 
       $fields = Array();
 
-      $crawler->filter('#sticky-contact-bottom > div.left-side > h1')->each(function($node, $index) use (&$ad){
-        $ad->Indirizzo = $node->text();
+      $crawler->filter('#js-hydration')->each(function($node, $index) use (&$jsHydration){
+        $jsHydration = json_decode($node->text());
       });
 
-      $crawler->filter('#up-contact-box > div.contact-data > div > div:nth-child(2) > p > a')->each(function ($node) use (&$ad){
-        $agenzia = $node->text();
-        $agenzia = str_replace("&nbsp;", "", $agenzia);
-        $agenzia = trim(preg_replace('/\s\s+/', ' ', $agenzia));
-        $ad->Agenzia = $agenzia;
-      });
+      /**
+       * BEGIN ; JSHYDRATATION
+       */
 
-      $crawler->filter('#sticky-contact-bottom > div.left-side > div.im-summary.js-sticky-features > div.im-property__features > ul.list-inline.list-piped.features__list > li:nth-child(1) > div:nth-child(1) > span')->each(function ($node) use (&$ad){
-        $locali = htmlentities($node->text(), null, 'utf-8');
-        $ad->Locali = intval(str_replace("&nbsp;", "", $locali));
-      });
+      $jsh_listing = $jsHydration->listing;
+      $jsh_property = $jsh_listing->properties[0];
+      $jsh_multimedia = $jsh_property->multimedia;
+      $jsh_floorplans = $jsh_multimedia->floorplans;
+      $jsh_location = $jsh_property->location;
+      $jsh_advertiser = $jsh_listing->advertiser;
+      $jsh_agency = $jsh_advertiser->agency;
+      $jsh_supervisor = $jsh_advertiser->supervisor; 
+      $jsh_agency_phones = ($jsh_agency && $jsh_agency->phones) ? $jsh_agency->phones : null;
+      $jsh_contract = $jsh_listing->contract;
+      $jsh_trovakasa = $jsHydration->trovakasa;
+      $jsh_costs = $jsh_property->costs;
+      $jsh_macrozone = $jsh_location->macrozone;
 
-      $crawler->filter('#sticky-contact-bottom > div.left-side > div.im-summary.js-sticky-features > div.im-property__features > ul.list-inline.list-piped.features__list > li:nth-child(2) > div:nth-child(1) > span')->each(function ($node) use (&$ad){
-        $superficie = htmlentities($node->text(), null, 'utf-8');
-        $ad->SuperficieMq = intval(str_replace("&nbsp;", "", $superficie));
-      });
+      /**
+       * END ; JSHYDRATATION
+       */
+      //Test mode
+      //$ad->jsHydration = $jsHydration;
 
-      $crawler->filter('#sticky-contact-bottom > div.left-side > div.im-summary.js-sticky-features > div.im-property__features > ul.list-inline.list-piped.features__list > li:nth-child(3) > div:nth-child(1) > span')->each(function ($node) use (&$ad){
-        $bagni = htmlentities($node->text(), null, 'utf-8');
-        $ad->Bagni = intval(str_replace("&nbsp;", "", $bagni));
-      });
+      if(count($jsh_floorplans) > 0)
+        $ad->LinkPlanimetria = $jsh_floorplans[0]->urls->large;
 
-      $crawler->filter('#sticky-contact-bottom > div.left-side > div.im-summary.js-sticky-features > div.im-property__features > ul.list-inline.list-piped.features__list > li:nth-child(4) > div:nth-child(1) > abbr')->each(function ($node) use (&$ad){
-        $piano = htmlentities($node->text(), null, 'utf-8');
-        $piano = str_replace("&nbsp;", "", $piano);
-        $piano = trim(preg_replace('/\s\s+/', ' ', $piano));
-        $ad->Piano = $piano;
-      });
+      if($jsh_location->address){
+        $ad->Indirizzo = $jsh_location->address;
 
-      $crawler->filter('#sticky-contact-bottom > div.left-side > div.section-data > dl > dt')->each(function($node, $index) use (&$fields){
+        if($jsh_location->city && $jsh_location->city->name)
+          $ad->Indirizzo .= ', ' . $jsh_location->city->name;
+
+      }else{
+        $crawler->filter('body > div.nd-grid.im-structure__container > section:nth-child(2) > div.im-titleBlock > h1 > span')->each(function($node, $index) use (&$ad){
+          $ad->Indirizzo = $node->text();
+        });
+      }
+
+      $agencyName = ($jsh_agency && $jsh_agency->displayName) ? unicodeToCharacters($jsh_agency->displayName) : $jsh_supervisor->displayName;
+      $ad->Agenzia = $agencyName;
+      $ad->Contratto = $jsh_contract->name;
+      $ad->Locali = $jsh_trovakasa->locMax;
+      $ad->SuperficieMq = str_replace(' m²', '', $jsh_property->surfaceValue);
+      $ad->Bagni = ($jsh_trovakasa && $jsh_trovakasa->bagni) ? $jsh_trovakasa->bagni : 1;
+      $ad->Canone = $jsh_costs->price;
+      $ad->Prezzo = $jsh_costs->price;
+      $ad->ZonaName = $jsh_macrozone->name;
+      $ad->Titolo = $jsh_listing->title;
+
+      if(count($jsh_agency_phones) > 0)
+        $ad->Telefono = $jsh_agency_phones[0]->formattedValue;
+
+      $crawler->filter('div.nd-grid.im-structure__container > section.im-structure__mainContent > dl.im-features__list > dt.im-features__title')->each(function($node, $index) use (&$fields){
         $field = new stdClass();
         $field->Title = $node->text();
         $field->Index = $index;
@@ -166,7 +191,7 @@ class Immobiliare {
       });
 
       for ($z=0; $z < count($fields); $z++) { 
-            $crawler->filter('#sticky-contact-bottom > div.left-side > div.section-data > dl > dd')->each(function($node, $index) use (&$fields, &$z){
+            $crawler->filter('div.nd-grid.im-structure__container > section.im-structure__mainContent > dl.im-features__list > dd.im-features__value')->each(function($node, $index) use (&$fields, &$z){
               if($fields[$z]->Index === $index){
                 $value = htmlentities($node->text(), null, 'utf-8');
                 $value = str_replace("&nbsp;", "", $value);
@@ -177,17 +202,20 @@ class Immobiliare {
             });
       }
 
+      //Test mode
+      //$ad->Array = $fields;
+
       for ($zx=0; $zx < count($fields); $zx++) { 
         switch ($fields[$zx]->Title) {
-          case 'Contratto':
-            $ad->Contratto = $fields[$zx]->Value;
-            break;
-          case 'Piano':
+          case 'piano':
             if(strpos($fields[$zx]->Value, 'con ascensore')){
               $ad->Ascensore = true;
             }
+
+            $piano = explode("&deg;", $fields[$zx]->Value);
+            $ad->Piano = $piano[0];
             break;
-          case 'Riscaldamento':
+          case 'riscaldamento':
             $riscaldamento = $fields[$zx]->Value;
             if(strpos($riscaldamento, 'Centralizzato') === 0){
               $ad->TipoRiscaldamento = 1;
@@ -195,7 +223,7 @@ class Immobiliare {
               $ad->TipoRiscaldamento = 2;
             }
             break;
-          case 'Spese condominio':
+          case 'spese condominio':
             $speseCondominio = str_replace("&euro; ", "", $fields[$zx]->Value);
             $speseCondominio = str_replace(".", "", $speseCondominio);
 
@@ -210,7 +238,7 @@ class Immobiliare {
 
             $ad->SpeseCondominio = floatval($speseCondominio) > 1 ? floatval($speseCondominio) : 0;
             break;
-          case 'Spese riscaldamento':
+          case 'spese riscaldamento':
             $speseRiscaldamento = str_replace("&euro; ", "", $fields[$zx]->Value);
             $speseRiscaldamento = str_replace(".", "", $speseRiscaldamento);
 
@@ -223,58 +251,7 @@ class Immobiliare {
             
             $ad->SpeseRiscaldamento = floatval($speseRiscaldamento) > 1 ? floatval($speseRiscaldamento) : 0;
             break;
-          case 'Prezzo':
-
-            $prezzo = str_replace("Affitto &euro; ", "", $fields[$zx]->Value);
-            $prezzo = str_replace("Vendita &euro; ", "", $prezzo);
-            $prezzo = str_replace(" al mese", "", $prezzo);
-            $prezzo = str_replace(".", "", $prezzo);
-            $prezzo = str_replace(" ", "", $prezzo);
-
-            if (strpos($prezzo, "mutuo") !== false) {
-              $prezzo = substr($prezzo, 0, strpos($prezzo, "mutuo"));
-            }
-            
-            $ad->Prezzo = floatval($prezzo);
-            $ad->Canone = floatval($prezzo);
-
-            break;
         }
-      }
-
-      if(!$ad->Agenzia){
-        $crawler->filter('#down-contact-box div.contact-data.highlight div.clearfix p.contact-data__name a')->each(function($node, $index) use (&$ad){
-          $agenzia = $node->text();
-          $agenzia = str_replace("&nbsp;", "", $agenzia);
-          $agenzia = trim(preg_replace('/\s\s+/', ' ', $agenzia));
-          $ad->Agenzia = $agenzia;
-        });
-      }
-
-      if(!$ad->Agenzia){
-        $crawler->filter('#up-contact-box > div.contact-data.contact-data__agt > div > div.hide-in-sticky.hide-modal-mobile.clearfix > p > a')->each(function ($node) use (&$ad){
-          $agenzia = $node->text();
-          $agenzia = str_replace("&nbsp;", "", $agenzia);
-          $agenzia = trim(preg_replace('/\s\s+/', ' ', $agenzia));
-          $ad->Agenzia = $agenzia;
-        });
-      }
-
-      $crawler->filter('#up-contact-box div.contact-data span.contact__box span.info-agenzia')->each(function($node, $index) use (&$ad){
-        $val = htmlentities($node->text(), null, 'utf-8');
-        $val = str_replace("&nbsp;", "", $val);
-        $val = trim(preg_replace('/\s\s+/', ' ', $val));
-        $ad->Telefono = $val;
-      });
-
-      $crawler->filter('#planimetria img')->each(function($node, $index) use (&$ad){
-        $ad->LinkPlanimetria = $node->attr('src');
-      });
-
-      if($ad->LinkPlanimetria === ""){
-        $crawler->filter('#planimetria a')->each(function($node, $index) use (&$ad){
-          $ad->LinkPlanimetria = $node->attr('href');
-        });
       }
 
       if($ad->Indirizzo){
@@ -287,8 +264,24 @@ class Immobiliare {
         $ad->LinkMappa = "https://www.google.it/maps/search/" . urlencode($indirizzo);
       }
 
+      $crawler->filter('body > div.nd-grid.im-structure__container > section.im-structure__mainContent > nd-read-all > div.im-readAll__container.js-readAllContainer > div.im-description__text.js-readAllText')->each(function($node, $index) use (&$ad){
+        $descrizione = htmlentities($node->text(), null, 'utf-8');
+        $descrizione = str_replace("&nbsp;", "", $descrizione);
+        $descrizione = trim(preg_replace('/\s\s+/', ' ', $descrizione));
+
+        if (strlen($descrizione) > 2000)
+          $descrizione = substr($descrizione, 0, 1990) . '...';
+
+        $ad->TestoAnnuncio = $descrizione;
+      });
+
       $ad->Zona = $zona;
-      $ad->TettoMassimo = $tettoMassimo;
+
+      if($tettoMassimo > 0){
+        $reduceTettoMassimoPerc = 15;
+        $reduceTettoAmount = $tettoMassimo/100*$reduceTettoMassimoPerc;
+        $ad->TettoMassimo = ($tettoMassimo - $reduceTettoAmount);
+      }
 
       return $ad;
       } catch (Exception $e) {

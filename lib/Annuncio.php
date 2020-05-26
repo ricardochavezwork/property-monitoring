@@ -3,6 +3,8 @@
 class Annuncio {
 
   public $Indirizzo = "";
+  public $Titolo = "";
+  public $TestoAnnuncio = "";
   public $Link = "";
   public $LinkMappa = "";
   public $LinkPlanimetria = "";
@@ -20,6 +22,7 @@ class Annuncio {
   public $TipoRiscaldamento = 0;//1 : Cenrtralizzato, 2 : Autonomo
   public $Contratto = "";
   public $Zona = 0;
+  public $ZonaName = "";
   public $Status = "Da valutare";
   
 }
