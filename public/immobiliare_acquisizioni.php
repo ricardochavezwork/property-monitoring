@@ -43,12 +43,16 @@ foreach ($requests as $key => $request) {
         $adsCounter++;
         $ad_link = 'https://www.immobiliare.it/annunci/' . $ad_id;
 
-        $ad = Immobiliare::getAnnuncio($ad_link, null, $tettoMassimo);
-
         $existingRecordId = ZohoCrmApi::LinkAdExists($ad_link, $moduleName);
-        $record = ZohoCrmApi::getRecord($existingRecordId, $moduleName);
-        $record = ZohoCrmApi::fillRecordFromImmobiliare($record, $ad, $existingRecordId);
-        ZohoCrmApi::upsertRecords(Array($record), $moduleName);
+        $hasErrorPage = Immobiliare::hasErrorPage($ad_link);
+        if(!$hasErrorPage){
+          $ad = Immobiliare::getAnnuncio($ad_link, null, $tettoMassimo);
+          $record = ZohoCrmApi::getRecord($existingRecordId, $moduleName);
+          $record = ZohoCrmApi::fillRecordFromImmobiliare($record, $ad, $existingRecordId);
+          ZohoCrmApi::upsertRecords(Array($record), $moduleName);
+        }else if($hasErrorPage && $existingRecordId > 0){
+          ZohoCrmApi::deleteRecords(array($record->getEntityId()), $moduleName);
+        }
       }
     }
   }

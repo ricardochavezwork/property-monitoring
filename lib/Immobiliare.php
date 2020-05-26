@@ -109,6 +109,22 @@ class Immobiliare {
     }
   }
 
+  public static function hasErrorPage($recordLink){
+    try {
+      $client = new Client();
+      $crawler = $client->request('GET', $recordLink);
+      $hasError = false;
+
+      $crawler->filter('div.body-content.error-page.error-block div.error-block__error-404')->each(function ($node) use (&$hasError) {
+        $hasError = true;
+      });
+
+      return $hasError;
+    } catch (Exception $e) {
+      return false;
+    }
+  }
+
   public static function getAnnuncio($link = "", $zona, $tettoMassimo){
     try {
       if(!$link)
@@ -154,7 +170,7 @@ class Immobiliare {
       //Test mode
       //$ad->jsHydration = $jsHydration;
 
-      if(count($jsh_floorplans) > 0)
+      if($jsh_floorplans && count($jsh_floorplans) > 0)
         $ad->LinkPlanimetria = $jsh_floorplans[0]->urls->large;
 
       if($jsh_location->address){
@@ -190,7 +206,7 @@ class Immobiliare {
         $fields[] = $field;
       });
 
-      for ($z=0; $z < count($fields); $z++) { 
+      for ($z=0; $z < count($fields); $z++) {
             $crawler->filter('div.nd-grid.im-structure__container > section.im-structure__mainContent > dl.im-features__list > dd.im-features__value')->each(function($node, $index) use (&$fields, &$z){
               if($fields[$z]->Index === $index){
                 $value = htmlentities($node->text(), null, 'utf-8');
