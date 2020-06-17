@@ -43,7 +43,11 @@ $requests = Array(
   Array(28, "https://www.immobiliare.it/vendita-case/milano/?criterio=rilevanza&superficieMinima=90&noAste=1&idMZona[]=10293"),
   Array(29, "https://www.immobiliare.it/vendita-case/milano/?criterio=rilevanza&superficieMinima=90&noAste=1&idMZona[]=10320"),
   Array(30, "https://www.immobiliare.it/vendita-case/milano/?criterio=rilevanza&superficieMinima=90&noAste=1&idMZona[]=10069"),
-  Array(31, "https://www.immobiliare.it/vendita-case/milano/?criterio=rilevanza&superficieMinima=90&noAste=1&idMZona[]=10319")
+  Array(31, "https://www.immobiliare.it/vendita-case/milano/?criterio=rilevanza&superficieMinima=90&noAste=1&idMZona[]=10319"),
+  Array(32, "https://www.immobiliare.it/vendita-palazzi/milano/?criterio=rilevanza&noAste=1"),
+  Array(33, "https://www.immobiliare.it/ricerca_nc.php?idCategoria=6&idContratto=&idTipologia[]=54&idTipologia[]=85&idTipologia[]=56&idTipologia[]=58&idRegione=lom&idProvincia=MI&idComune=8042&prezzoMinimo=&prezzoMassimo=&superficieMinima=&superficieMassima=&bagni=&criterio=rilevanza&ordine=desc"),
+  Array(34, "https://www.immobiliare.it/Milano/vendita_immobili_commerciali/ufficio-Milano.html?criterio=rilevanza&noAste=1"),
+  Array(35, "https://www.immobiliare.it/terreni/Milano/terreni_edificabili-Milano.html?criterio=rilevanza&noAste=1")
 );
 
 foreach ($requests as $key => $request) {
